@@ -1,0 +1,44 @@
+---
+title: "Untitled"
+author: "Yu-Xiang, Lin"
+date: "10/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+methods <- read.csv("/Users/linyuxiang/Desktop/多變量/Data/methods.csv")
+combined<- cbind(methods$X1,methods$X2)
+
+mod2<-manova(combined~method, data=methods)
+mod2 <- manova(combined~method, data = methods)
+`T` <- matrix(c(4815.375, 1536.5, 1536.5, 654.4), nrow = 2) 
+B <- matrix(c(914.075, 148.1, 148.1, 67.4), nrow = 2)
+W <- `T` - B
+det(`T`)
+det(W)
+lamda <- det(`W`) / det(`T`); lamda
+(1 - sqrt(lamda)) / sqrt(lamda) *(35/3)
+```
+
+
+```{r}
+library(HSAUR)
+y <- cbind(skulls$mb,skulls$bh,skulls$bl,skulls$nh)
+mod2 <- manova(y~epoch,data = skulls)
+summary(mod2)
+```
+
+```{r}
+combined <- cbind(rootstock$V2,rootstock$V3,rootstock$V4,rootstock$V5)
+mod3 <- manova(combined~V1,data = rootstock)
+summary(mod3)
+```
+

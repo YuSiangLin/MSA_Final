@@ -1,0 +1,728 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Midterm exam},
+            pdfauthor={Yu-Xiang Lin},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+% https://github.com/rstudio/rmarkdown/issues/337
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+% https://github.com/rstudio/rmarkdown/pull/252
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+
+\pretitle{\vspace{\droptitle}\centering\huge}
+\posttitle{\par}
+
+\preauthor{\centering\large\emph}
+\postauthor{\par}
+
+\predate{\centering\large\emph}
+\postdate{\par}
+
+\title{Midterm exam}
+\author{Yu-Xiang Lin}
+\date{11/9/2020}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{4}
+\tableofcontents
+}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages ----------------------------------------------- tidyverse 1.3.0 --
+\end{verbatim}
+
+\begin{verbatim}
+## v ggplot2 3.2.1     v purrr   0.3.3
+## v tibble  3.0.3     v dplyr   1.0.2
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'tibble' was built under R version 3.6.2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'dplyr' was built under R version 3.6.2
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts -------------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(covTestR)}
+\KeywordTok{library}\NormalTok{(glmnet)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: Matrix
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'Matrix'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:tidyr':
+## 
+##     expand, pack, unpack
+\end{verbatim}
+
+\begin{verbatim}
+## Loaded glmnet 3.0-1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(gridExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'gridExtra'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     combine
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(grid)}
+\KeywordTok{library}\NormalTok{(Hotelling)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: corpcor
+\end{verbatim}
+
+\hypertarget{problem-1}{%
+\subsection{Problem 1}\label{problem-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p1 <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{"/Users/linyuxiang/R/MSA/mid/paper.dat"}\NormalTok{, }\DataTypeTok{header =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+Paper is manufactured in continuous sheets several feet wide. Because of
+the orientation of fibers within the paper, it has a different strength
+when measured in the direction produced by the machine than when
+measured across, or at right angles to, the machine direction. The file
+``paper.dat'' shows the measured values of\\
+x1 = density(grams/cubic centinleter)\\
+x2 = strength (pounds) in the machine direction\\
+x3 = strength (pounds) in the cross direction\\
+\#\#\# (a) Plot the scatter plots as the off-diagonal elements and box
+plots as the diagonal elements. (10\%)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{myplot <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(i,ii)\{}
+   \ControlFlowTok{if}\NormalTok{ (i }\OperatorTok{!=}\StringTok{ }\NormalTok{ii)\{}
+\NormalTok{   p <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(p1, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ p1[,i],}\DataTypeTok{y =}\NormalTok{ p1[,ii]))}\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{xlab}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\KeywordTok{names}\NormalTok{(p1)[i]))}\OperatorTok{+}\KeywordTok{ylab}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\KeywordTok{names}\NormalTok{(p1)[ii]))}
+\NormalTok{\}}
+\KeywordTok{return}\NormalTok{(p)}
+\NormalTok{\}}
+\NormalTok{box_p1 <-}\StringTok{ }\NormalTok{p1 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{gather}\NormalTok{(}\StringTok{"x"}\NormalTok{, }\StringTok{"y"}\NormalTok{)}
+
+\NormalTok{p1_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(box_p1, x }\OperatorTok{==}\StringTok{"density"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{ggplot}\NormalTok{(.,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)) }\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{ylab}\NormalTok{(}\StringTok{"value"}\NormalTok{)}
+\NormalTok{p2_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(box_p1, x }\OperatorTok{==}\StringTok{"machine"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{ggplot}\NormalTok{(.,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)) }\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{ylab}\NormalTok{(}\StringTok{"value"}\NormalTok{)}
+\NormalTok{p3_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(box_p1, x }\OperatorTok{==}\StringTok{"cross"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{ggplot}\NormalTok{(.,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)) }\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{ylab}\NormalTok{(}\StringTok{"value"}\NormalTok{)}
+
+\NormalTok{p1_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{);p1_}\DecValTok{3}\NormalTok{<-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)}
+\NormalTok{p2_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{);p2_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)}
+\NormalTok{p3_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{);p3_}\DecValTok{2}\NormalTok{ <-}\StringTok{ }\KeywordTok{myplot}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{2}\NormalTok{)}
+\KeywordTok{grid.arrange}\NormalTok{(p1_}\DecValTok{1}\NormalTok{,p1_}\DecValTok{2}\NormalTok{,p1_}\DecValTok{3}\NormalTok{,}
+\NormalTok{             p2_}\DecValTok{1}\NormalTok{,p2_}\DecValTok{2}\NormalTok{,p2_}\DecValTok{3}\NormalTok{,}
+\NormalTok{             p3_}\DecValTok{1}\NormalTok{,p3_}\DecValTok{2}\NormalTok{,p3_}\DecValTok{3}\NormalTok{,}\DataTypeTok{nrow=} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{midterm_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans: 從散佈圖中可以看出變數machine, density,
+  croww間幾乎都呈現正相關，且從箱型圖中可以發現似乎有一個觀察值在density變項中屬於outlier
+\end{itemize}
+
+\hypertarget{b-examine-the-data-on-paper-quality-measurements-for-single-and-multivariate-outliers-as-well-as-the-multivariate-normality.10}{%
+\subsubsection{(b) Examine the data on paper-quality measurements for
+single and multivariate outliers as well as the multivariate
+normality.(10\%)}\label{b-examine-the-data-on-paper-quality-measurements-for-single-and-multivariate-outliers-as-well-as-the-multivariate-normality.10}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Single Outlier}
+\NormalTok{density <-}\StringTok{ }\KeywordTok{scale}\NormalTok{(p1}\OperatorTok{$}\NormalTok{density); }\KeywordTok{which}\NormalTok{(density }\OperatorTok{>}\StringTok{ }\FloatTok{2.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 25
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{machine <-}\StringTok{ }\KeywordTok{scale}\NormalTok{(p1}\OperatorTok{$}\NormalTok{machine); }\KeywordTok{which}\NormalTok{(machine }\OperatorTok{>}\StringTok{ }\FloatTok{2.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## integer(0)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cross <-}\StringTok{ }\KeywordTok{scale}\NormalTok{(p1}\OperatorTok{$}\NormalTok{cross); }\KeywordTok{which}\NormalTok{(cross }\OperatorTok{>}\StringTok{ }\FloatTok{2.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## integer(0)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## multivariate outliers}
+\NormalTok{Sx <-}\StringTok{ }\KeywordTok{cov}\NormalTok{(p1)}
+\NormalTok{D2 <-}\StringTok{ }\KeywordTok{mahalanobis}\NormalTok{(p1,}\KeywordTok{colMeans}\NormalTok{(p1),Sx)}
+\CommentTok{# simple}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{ncol}\NormalTok{(p1)}
+\KeywordTok{which}\NormalTok{((D2 }\OperatorTok{/}\StringTok{ }\NormalTok{p) }\OperatorTok{>}\FloatTok{2.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 25
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Wilks' statisc}
+\NormalTok{n <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(p1)}
+\NormalTok{w <-}\StringTok{ }\DecValTok{1}\OperatorTok{-}\NormalTok{((n}\OperatorTok{*}\NormalTok{(D2)) }\OperatorTok{/}\StringTok{ }\NormalTok{(n}\DecValTok{-1}\NormalTok{)}\OperatorTok{^}\DecValTok{2}\NormalTok{)}
+\NormalTok{Fi <-}\StringTok{ }\NormalTok{((n}\OperatorTok{-}\NormalTok{p}\DecValTok{-1}\NormalTok{)}\OperatorTok{/}\NormalTok{p) }\OperatorTok{*}\StringTok{ }\NormalTok{((}\DecValTok{1}\OperatorTok{/}\NormalTok{w)}\OperatorTok{-}\DecValTok{1}\NormalTok{)}
+\KeywordTok{which}\NormalTok{(Fi }\OperatorTok{>}\StringTok{ }\KeywordTok{qf}\NormalTok{(}\FloatTok{0.995}\NormalTok{,p,n}\OperatorTok{-}\NormalTok{p}\DecValTok{-1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 25
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Multivariate normality}
+\NormalTok{index <-}\StringTok{  }\NormalTok{((}\DecValTok{1}\OperatorTok{:}\NormalTok{n)}\OperatorTok{-}\FloatTok{0.5}\NormalTok{)}\OperatorTok{/}\NormalTok{n}
+\NormalTok{quant <-}\StringTok{ }\KeywordTok{qchisq}\NormalTok{(index,p)}
+\NormalTok{qq_p1 <-}\StringTok{ }\KeywordTok{bind_cols}\NormalTok{(p1,}\KeywordTok{data_frame}\NormalTok{(}\DataTypeTok{D2 =}\NormalTok{ D2,}\DataTypeTok{quant =}\NormalTok{ quant))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: `data_frame()` is deprecated as of tibble 1.1.0.
+## Please use `tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{qqnorm}\NormalTok{(qq_p1}\OperatorTok{$}\NormalTok{D2,}\DataTypeTok{ylab =} \StringTok{"Ordered Mahalanobis Distance"}\NormalTok{);}\KeywordTok{qqline}\NormalTok{(qq_p1}\OperatorTok{$}\NormalTok{D2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{midterm_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans:
+  針對個觀察樣本的每個變項進行outlier的檢定，結果發現只有第25個樣本的density數值屬於outlier，其他樣本以及其他變數均沒有outlier存在。使用\(D_2/p\)
+  \textgreater{} 2.5作為Multivariate
+  outlier檢定的標準，發現第25個樣本為outlier。若進一步使用使用Wilks'
+  statisc進行Multivariate outlier檢定可以得到該樣本為outlier,
+  和起初使用D2 / p \textgreater{}
+  2.5的標準得到相同結果，outlier為第25個觀察值。針對Multivariate
+  normality，從Q-Q圖中可以發現該資料可能是常態分配，大部分樣本的Mahalanobis
+  Distance的數值均座落於Q-Q line，只有少部分Mahalannobis
+  Distance的數值略高於Q-Q line，且只有一個樣本遠高於Q-Q line
+\end{itemize}
+
+\hypertarget{problem-2}{%
+\subsection{Problem 2}\label{problem-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p2 <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{"/Users/linyuxiang/R/MSA/mid/love.dat"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+As part of the study of love and marriage, a sample of husbands and
+wives were asked to respond to these questions:\\
+1. What is the level of passionate love you feel for your partner?\\
+2. What is the level of passionate love that your partner feels for
+you?\\
+3. What is the level of companionate love that you feel for your
+partner?\\
+4. What is the level of companionate love that your partner feels for
+you?
+
+The responses were recorded on the following 5-point scale. 1. None at
+all. 2. Very little. 3. Some. 4. A great deal. 5. Tremendous amount.
+
+30 husbands and 30 wives gave the responses in the Thble, where \(X_1\)
+= a 5-point- scale response to Question 1, \(X_2\) = a 5-point-scale
+response to Question 2, \(X_3\) = a 5-point-scale response to Question
+3, and \(X_4\) = a 5-point-scale response to Question 4. (love.dat)\\
+\#\#\# (a) Plot the mean vectors for husbands and wives as sample
+profiles. (10\%)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p2 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(V5) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{summarise_at}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"V1"}\NormalTok{,}\StringTok{"V2"}\NormalTok{,}\StringTok{"V3"}\NormalTok{,}\StringTok{"V4"}\NormalTok{),mean) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{gather}\NormalTok{(}\StringTok{"question"}\NormalTok{,}\StringTok{"value"}\NormalTok{, }\OperatorTok{-}\NormalTok{V5) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{   }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{factor}\NormalTok{(question), }\DataTypeTok{y =}\NormalTok{ value, }\DataTypeTok{group =}\NormalTok{ V5, }\DataTypeTok{color =}\NormalTok{ V5))}\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_line}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}
+\StringTok{   }\KeywordTok{xlab}\NormalTok{(}\StringTok{"question"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{midterm_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans:
+  從途中大致上可以看出Husband和Wife間在不同的問題上可能有平行的關係，但從V2和V3在Husband和Wife的差距不同即可看出可能沒有same
+  level
+\end{itemize}
+
+\hypertarget{b-is-the-husband-rating-wife-profile-parallel-to-the-wife-rating-husband-profile-test-for-parallel-profiles-with-alpha-0.05.-if-the-profiles-appear-to-be-parallel-test-for-coin--cident-profiles-at-the-same-level-of-significance.-finally-if-the-profiles-are-coinci--dent-test-for-level-profiles-with-alpha-0.05.-what-conclusions-can-be-drawn-from-this-analysis-20}{%
+\subsubsection{\texorpdfstring{(b) Is the husband rating wife profile
+parallel to the wife rating husband profile? Test for parallel profiles
+with \(\alpha = 0.05\). If the profiles appear to be parallel, test for
+coin- cident profiles at the same level of significance. Finally, if the
+profiles are coinci- dent, test for level profiles with
+\(\alpha = 0.05\). What conclusion(s) can be drawn from this analysis?
+(20\%)}{(b) Is the husband rating wife profile parallel to the wife rating husband profile? Test for parallel profiles with \textbackslash{}alpha = 0.05. If the profiles appear to be parallel, test for coin- cident profiles at the same level of significance. Finally, if the profiles are coinci- dent, test for level profiles with \textbackslash{}alpha = 0.05. What conclusion(s) can be drawn from this analysis? (20\%)}}\label{b-is-the-husband-rating-wife-profile-parallel-to-the-wife-rating-husband-profile-test-for-parallel-profiles-with-alpha-0.05.-if-the-profiles-appear-to-be-parallel-test-for-coin--cident-profiles-at-the-same-level-of-significance.-finally-if-the-profiles-are-coinci--dent-test-for-level-profiles-with-alpha-0.05.-what-conclusions-can-be-drawn-from-this-analysis-20}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{g1 <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(p2, V5}\OperatorTok{==}\StringTok{"Husband"}\NormalTok{)[,}\OperatorTok{-}\DecValTok{5}\NormalTok{]}
+\NormalTok{g2 <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(p2, V5 }\OperatorTok{==}\StringTok{"Wife"}\NormalTok{)[,}\OperatorTok{-}\DecValTok{5}\NormalTok{]}
+\NormalTok{S_g1 <-}\StringTok{ }\KeywordTok{cov}\NormalTok{(g1); S_g2 <-}\StringTok{ }\KeywordTok{cov}\NormalTok{(g2); pooled <-}\StringTok{ }\NormalTok{(S_g1}\OperatorTok{+}\NormalTok{S_g2)}\OperatorTok{/}\DecValTok{2}
+\NormalTok{n1 <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(g1); n2 <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(g2);n <-}\StringTok{ }\NormalTok{n1}\OperatorTok{+}\NormalTok{n2 }
+\NormalTok{x1_bar <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(g1, }\DecValTok{2}\NormalTok{, mean); x2_bar <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(g2, }\DecValTok{2}\NormalTok{, mean)}
+\NormalTok{x_bar <-}\StringTok{ }\NormalTok{(x1_bar}\OperatorTok{+}\NormalTok{x2_bar)}\OperatorTok{/}\DecValTok{2}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{ncol}\NormalTok{(p2)}\OperatorTok{-}\DecValTok{1}
+\NormalTok{A <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{),}\DataTypeTok{nrow =} \DecValTok{3}\NormalTok{, }\DataTypeTok{byrow=}\NormalTok{ T)}
+\CommentTok{# parallelism}
+\NormalTok{para_T <-}\StringTok{ }\NormalTok{((n1}\OperatorTok{*}\NormalTok{n2) }\OperatorTok{/}\StringTok{ }\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2)) }\OperatorTok{*}\StringTok{ }\KeywordTok{t}\NormalTok{(x1_bar }\OperatorTok{-}\StringTok{ }\NormalTok{x2_bar) }\OperatorTok{%*%}\StringTok{ }\KeywordTok{t}\NormalTok{(A) }\OperatorTok{%*%}\StringTok{ }
+\StringTok{   }\KeywordTok{solve}\NormalTok{(A}\OperatorTok{%*%}\NormalTok{pooled}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(A)) }\OperatorTok{%*%}\StringTok{ }\NormalTok{A }\OperatorTok{%*%}\NormalTok{(x1_bar }\OperatorTok{-}\StringTok{ }\NormalTok{x2_bar)}
+\NormalTok{df1 <-}\StringTok{ }\NormalTok{p}\DecValTok{-1}\NormalTok{; df2 <-}\StringTok{ }\NormalTok{n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p}
+\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p) }\OperatorTok{/}\StringTok{ }\NormalTok{((n1}\OperatorTok{+}\NormalTok{n2}\DecValTok{-2}\NormalTok{)}\OperatorTok{*}\NormalTok{(p}\DecValTok{-1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{para_T; }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          [,1]
+## [1,] 2.579917
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p) }\OperatorTok{/}\StringTok{ }\NormalTok{((n1}\OperatorTok{+}\NormalTok{n2}\DecValTok{-2}\NormalTok{)}\OperatorTok{*}\NormalTok{(p}\DecValTok{-1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{para_T }\OperatorTok{>}\StringTok{ }\KeywordTok{qf}\NormalTok{(}\FloatTok{0.95}\NormalTok{, df1,df2); }\CommentTok{## Paralle relation 2.579917}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       [,1]
+## [1,] FALSE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Equal mean response}
+\NormalTok{equal_resp_T2 <-}\StringTok{ }\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2)}\OperatorTok{*}\StringTok{ }\NormalTok{(}\KeywordTok{t}\NormalTok{(x_bar)}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(A))}\OperatorTok{%*%}\KeywordTok{solve}\NormalTok{(A}\OperatorTok{%*%}\NormalTok{pooled}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(A))}\OperatorTok{%*%}\NormalTok{(A}\OperatorTok{%*%}\NormalTok{x_bar)}
+\NormalTok{df1 <-}\StringTok{ }\NormalTok{p}\DecValTok{-1}\NormalTok{; df2 <-}\StringTok{ }\NormalTok{n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p}
+\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p)}\OperatorTok{/}\NormalTok{((n1}\OperatorTok{+}\NormalTok{n2}\DecValTok{-2}\NormalTok{)}\OperatorTok{*}\NormalTok{(p}\DecValTok{-1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{equal_resp_T2;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         [,1]
+## [1,] 8.18807
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(n1}\OperatorTok{+}\NormalTok{n2}\OperatorTok{-}\NormalTok{p)}\OperatorTok{/}\NormalTok{((n1}\OperatorTok{+}\NormalTok{n2}\DecValTok{-2}\NormalTok{)}\OperatorTok{*}\NormalTok{(p}\DecValTok{-1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{equal_resp_T2 }\OperatorTok{>}\StringTok{ }\KeywordTok{qf}\NormalTok{(}\FloatTok{0.95}\NormalTok{, df1, df2); }\CommentTok{## No equal mean response 8.18807}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1]
+## [1,] TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# same level}
+\NormalTok{vec_}\DecValTok{1}\NormalTok{ <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,}\KeywordTok{length}\NormalTok{(x_bar)),}\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{)}
+\KeywordTok{abs}\NormalTok{(vec_}\DecValTok{1}\OperatorTok{%*%}\NormalTok{(x1_bar}\OperatorTok{-}\NormalTok{x2_bar) }\OperatorTok{/}\StringTok{ }
+\StringTok{   }\KeywordTok{sqrt}\NormalTok{((vec_}\DecValTok{1}\OperatorTok{%*%}\NormalTok{pooled}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(vec_}\DecValTok{1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{/}\NormalTok{n1 }\OperatorTok{+}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{n2)));}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          [,1]
+## [1,] 1.238051
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{abs}\NormalTok{(vec_}\DecValTok{1}\OperatorTok{%*%}\NormalTok{(x1_bar}\OperatorTok{-}\NormalTok{x2_bar) }\OperatorTok{/}\StringTok{ }
+\StringTok{   }\KeywordTok{sqrt}\NormalTok{((vec_}\DecValTok{1}\OperatorTok{%*%}\NormalTok{pooled}\OperatorTok{%*%}\KeywordTok{t}\NormalTok{(vec_}\DecValTok{1}\NormalTok{)) }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{/}\NormalTok{n1 }\OperatorTok{+}\StringTok{ }\DecValTok{1}\OperatorTok{/}\NormalTok{n2))) }\OperatorTok{>}\StringTok{ }\KeywordTok{qt}\NormalTok{(}\FloatTok{0.95}\NormalTok{,n1}\OperatorTok{+}\NormalTok{n2}\DecValTok{-2}\NormalTok{); }\CommentTok{## Same Level T 1.238051}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       [,1]
+## [1,] FALSE
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans: 在\(\alpha = 0.95下\)Profile
+  analysis的Parallelism檢驗中，F值為2.579917，小於F(0.95, 3,56) =
+  2.76，因此無法拒絕兩者關係平行的虛無假設。接著在假設平行的前提下檢測Equal
+  mean response和Same level，在Equal mean
+  response的檢驗中，F值為8.18807，大於F(0.95, 3,56) = 2.76，拒絕Equal
+  mean
+  response的虛無假設，即Husband和Wife在不同變數間的差距可能是不同的；在Same
+  level的檢驗中，T值為1.238051，小於T(0.95, 58) = 1.67，無法拒絕Same
+  level的虛無假設，也就是說在Husband和Wife組間問題的平均分數可能沒有明顯差異。
+\end{itemize}
+
+\hypertarget{problem-3}{%
+\subsection{Problem 3}\label{problem-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p3 <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"/Users/linyuxiang/R/MSA/mid/blood.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The following is the investigation of hemophilia by the National Taiwan
+University Medical School. Among the 68 women under investigation, 31
+were normal people and the other 37 were definite carriers of
+hemophilia. (blood.csv) The test items were:\\
+X1 = factor VIII coagulant activity \%\\
+X2 = factor VIII related antigen \%\\
+\#\#\# (a) Test the homogeneity of covariance matrices. (10\%)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{homogeneityCovariances}\NormalTok{(p3, }\DataTypeTok{group =}\NormalTok{ carrier)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Boxes' M Homogeneity of Covariance Matrices Test
+## 
+## data:  0 and 1
+## Chi-Squared = 3.7455, df = 496, p-value = 1
+## alternative hypothesis: true difference in covariance matrices is not equal to 0
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans: p-value = 1,
+  拒絕\(H_0: \Sigma_1 = \Sigma_2\)，也就是說Carrier兩個組別Covariance
+  matrices間可能存在差異。
+\end{itemize}
+
+\hypertarget{b-test-the-equality-between-the-mean-vectors-of-two-groups.-15}{%
+\subsubsection{(b) Test the equality between the mean vectors of two
+groups.
+(15\%)}\label{b-test-the-equality-between-the-mean-vectors-of-two-groups.-15}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(p3}\OperatorTok{$}\NormalTok{X1, p3}\OperatorTok{$}\NormalTok{X2)}
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{manova}\NormalTok{(y}\OperatorTok{~}\KeywordTok{as.factor}\NormalTok{(carrier), }\DataTypeTok{data =}\NormalTok{ p3)}
+\KeywordTok{summary}\NormalTok{(mod, }\DataTypeTok{test =} \StringTok{"Wilks"}\NormalTok{) }\CommentTok{# F: 58.27}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                    Df   Wilks approx F num Df den Df    Pr(>F)    
+## as.factor(carrier)  1 0.35805   58.271      2     65 3.184e-15 ***
+## Residuals          66                                             
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{hotelling.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ p3,.}\OperatorTok{~}\NormalTok{carrier); fit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Test stat:  58.271 
+## Numerator df:  2 
+## Denominator df:  65 
+## P-value:  3.109e-15
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans:
+  在\(\alpha = 0.001\)下達統計顯著，拒絕兩個組別間變數間平均數沒有不同的虛無假設，即在carrier
+  = 1和carrier = 0的組別間factor VIII coagulant activity, factor VIII
+  related antigen存在差異。
+\end{itemize}
+
+\hypertarget{problem-4}{%
+\subsection{Problem 4}\label{problem-4}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p4 <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{"/Users/linyuxiang/R/MSA/mid/food.dat"}\NormalTok{, }\DataTypeTok{header =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+Survey data were collected as part of a study to assess options for
+enhancing food security through the sustainable use of natural resources
+in the West Africa. A total of n = 72 farmers were surveyed and
+observations on the nine variables. (food.dat)
+
+x1 = Family (total number of individuals in household)\\
+x2 = DistRd (distance in kilometers to nearest passable road)\\
+x3 = Cotton (hectares of cotton planted in year 2000)\\
+x4 = Maize (hectares of maize planted in year 2000)\\
+x5 = Sorg (hectares of sorghum planted in year 2000)\\
+x6 = Millet (hectares of millet planted in year 2000)\\
+x7 = Bull (total number of bullocks or draft animals)\\
+x8 = Cattle (total) x9 = Goats (total)\\
+\#\#\# (b) Perform a principal component analysis using the correlation
+matrix R. Determine the number of components to effectively summarize
+the variability. Use the proportion of variation explained and a scree
+plot to aid in your determination. (15\%)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p4.pc <-}\StringTok{ }\KeywordTok{princomp}\NormalTok{(p4,}\DataTypeTok{cor=}\OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(p4.pc, }\DataTypeTok{type =} \StringTok{"l"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{midterm_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans:
+  從圖中可以看出在第六個主成分後的Variance幾乎趨近於零，因此我會選擇6個主成分作為模型的變項。
+\end{itemize}
+
+\hypertarget{c-interpret-the-first-five-principal-components.-can-you-identify-for-example-a-farm-size-component-a-perhaps-goats-and-distance-to-road-component-10}{%
+\subsubsection{(c) Interpret the first five principal components. Can
+you identify, for example, a ``farm-size'' component? A, perhaps,
+``goats and distance to road'' component?
+(10\%)}\label{c-interpret-the-first-five-principal-components.-can-you-identify-for-example-a-farm-size-component-a-perhaps-goats-and-distance-to-road-component-10}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{princomp}\NormalTok{(p4,}\DataTypeTok{cor=}\OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summary}\NormalTok{(}\DataTypeTok{loadings =}\NormalTok{ T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Importance of components:
+##                           Comp.1    Comp.2   Comp.3     Comp.4    Comp.5
+## Standard deviation     2.0457593 1.1992026 1.041393 0.88984136 0.7773833
+## Proportion of Variance 0.4650146 0.1597874 0.120500 0.08797974 0.0671472
+## Cumulative Proportion  0.4650146 0.6248020 0.745302 0.83328173 0.9004289
+##                            Comp.6     Comp.7     Comp.8     Comp.9
+## Standard deviation     0.60509161 0.48992202 0.41451805 0.34373679
+## Proportion of Variance 0.04068176 0.02666929 0.01909169 0.01312833
+## Cumulative Proportion  0.94111069 0.96777998 0.98687167 1.00000000
+## 
+## Loadings:
+##        Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8 Comp.9
+## Family  0.434                0.171                0.797  0.263  0.249
+## DistRD        -0.497 -0.569  0.496 -0.378 -0.187                     
+## Cotton  0.446         0.132        -0.219  0.200 -0.361 -0.329  0.675
+## Maize   0.352 -0.353  0.388  0.240         0.273        -0.363 -0.574
+## Sorg    0.204  0.604 -0.111        -0.645 -0.246        -0.126 -0.293
+## Millet  0.240  0.415 -0.116  0.616  0.527 -0.181 -0.241              
+## Bull    0.445               -0.146         0.134 -0.396  0.751 -0.190
+## Cattle  0.355 -0.284        -0.373  0.218 -0.759        -0.169       
+## Goats   0.255        -0.687 -0.351  0.249  0.402  0.131 -0.274 -0.149
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Ans: 第一個因子由變數Family, Cotton,
+  Bull貢獻做多，是家戶人數、棉花種植面積、牛隻圈養數量的相關因子；
+  第二個因子主要由Sorg, Millet,
+  DistRD貢獻最多，其中DistRd是反向的關係，是Sorg種植面積、Millet種植面積以及與最近道路距離相關的因子；
+  第三個因子是DistRd, Goats
+  為主要貢獻，兩者均為負向關係，是與最近道路距離以及總Goat圈養數量相關的因子；
+  第四個因子主要由DistRd,
+  Millet貢獻，兩者均為正向關係，是與最近道路距離以及Millet的種植面積相關的因子；
+  第五個因子主要由Sorg,
+  Millet構成，其中Sorg為負向關係，該因子應該是和Sorg種植面積負相關，和Millet種植面積正相關的因子。
+\end{itemize}
+
+\end{document}

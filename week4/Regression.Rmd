@@ -1,0 +1,86 @@
+---
+title: "Untitled"
+author: "Yu-Xiang, Lin"
+date: "10/12/2020"
+output: html_document
+---
+
+
+
+
+# Cov test
+```{r}
+m1 <- matrix(c(3.42,2.6,1.89,2.6,8,6.51,1.89,6.51,9.62),nrow = 3, ncol = 3)
+h0m <- matrix(c(4,3,2,3,6,5,2,5,10), nrow = 3)
+n = 20
+p = 3
+L <-  (n-1)*(log(det(h0m))- log(det(m1)) + sum(diag(m1%*%solve(h0m))) - 3)
+Bartlett_L <- L* ( 1 - (1 / (6*(n-1)-1)) * (2 * p + 1 - (2/(p+1))))
+# Bartlett_L~X^2(df = p(p-1)/2)
+Bartlett_L > qchisq(0.95, df = p*(p+1) / 2)
+
+
+# p = 變數個數
+p <- 3
+# m = 組數
+m <- 2
+# covariance matrix
+m1 <- matrix(c(4.32,1.88,1.88,9.18),nrow = 2)
+m2 <- matrix(c(2.52,1.9,1.9,10.06),nrow = 2)
+pool_m <- (m1+m2)/2
+# Boxes statisc = MC~X^2
+Boxes_M <- (31 * log(det(pool_m)) + 31 * log(det(pool_m)))  - (31 * log(det(m1)) + 31 * log(det(m2)))
+Boxes_C <- 1-((2*(p^2)+3*p-1)/ (6*(p+1)*(m-1))) * ((2/31) - (1/31))
+# chi-test
+Boxes_M*Boxes_C > qchisq(0.95, 3)
+
+df <- data_frame(x1,x2)
+
+
+```
+
+
+
+# lack error 
+```{r}
+exAM <- read.csv("/Users/linyuxiang/Desktop/多變量/Data/exAM.csv")
+fit <- lm(data = exAM, y~x)
+summary(fit)
+anova(fit)
+plot(exAM$x,exAM$y)
+fit2 <- lm(data = exAM,y~factor(x))
+summary(fit2)
+
+anova(fit, fit2)
+# model 的RSS是pure error, 相減差異是 lack of erro, 因為model2 的SSt是yi - yi-bar 
+# 顯著：有lack of fit
+```
+
+
+
+```{r}
+mile<-c(0,4,8,12,16,20,24,28,32);
+depth<-c(394.33, 329.5, 291, 255.17, 229.33, 204.83, 179, 163.83,
+150.33);
+mod1<-lm(depth~mile + I(mile^2))
+summary(mod1)
+anova(mod1)
+layout(matrix(c(1,2,3,4),2,2));plot(mod1)
+```
+
+```{r}
+mydata<-mtcars;
+y<-mtcars$mpg;
+x1<-mtcars$wt; 
+x2<-mtcars$disp;
+x3<-mtcars$hp;
+x4<-mtcars$drat;
+
+fit1 <- lm(y ~ x1 + x2 + x3 + x4, data=mydata)
+fit2 <- lm(y ~ x1 + x2)
+anova(fit1, fit2)
+
+mod1 <- summary(fit1)
+mod1$r.squared
+```
+

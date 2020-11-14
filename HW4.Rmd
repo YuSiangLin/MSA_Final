@@ -1,0 +1,89 @@
+---
+title: "HW4"
+author: "Yu-Xiang, Lin"
+date: "2020/11/8"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(glmnet)
+```
+
+# Analyze all the spam data using variable selection methods including (a) forward stepwise regression and backward stepwise regression. (12%) (b) Randomly select two thirds of the data as the training dataset and the remaining one third as the test data. (set.seed(1001)) (i) Use the training data to identify the lambda value that gives minimum cross-validated error for lasso regression, ridge regression, and elastic net regression with different alpha values. (20%) (ii) Apply the lambda with minimum cross-validated error to the test data and evaluate their mean square errors. (20%)
+
+## (a) 
+```{r, results='hide'}
+p1 <- read.table("/Users/linyuxiang/R/MSA/Data/spam.dat", header = T)
+p1.fwd <- step(lm(Y ~ 1, data=p1),~X.1+X.2+X.3+X.4+X.5+X.6+X.7+X.8+X.9+X.10+X.11+X.12+X.13+X.14+X.15+X.16+X.17+X.18+X.19+X.20+X.21+X.22+X.23+X.24+X.25+X.26+X.27+X.28+X.29+X.30+X.31+X.32+X.33+X.34+X.35+X.36+X.37+X.38+X.39+X.40+X.41+X.42+X.43+X.44+X.45+X.46+X.47+X.48+X.49+X.50+X.51+X.52+X.53+X.54+X.55+X.56+X.57, data=p1, direction="forward")
+fw_res <- p1.fwd$model %>% names()
+# backward
+p1.lrs <- lm(Y~., data = p1)
+pr.bwd <- step(p1.lrs, direction = "backward")
+bw_res <- pr.bwd %>% names()
+```
+
+```{r}
+intersect(fw_res, bw_res) 
+setdiff(fw_res, bw_res)
+setdiff(bw_res, fw_res)
+```
+
+- Ans: Forward和Backward方法篩選出來的變數大致相同，有X.21, X.23, X.7, X.57, X.16, X.52, X.25, X.5, X.53, X.8, X.24, X.6, X.20, X.22, X.42, X.18, X.27, X.46, X.49, X.45, X.19, X.33, X.9, X.26, X.12, X.17, X.37, X.44, X.3, X.4, X.48, X.47, X.43, X.1, X.2, X.35, X.40, X.30, X.11, X.54, X.38, X.10, X.50, X.56, X.34, X.39，唯一不同的是Forward方法有選出X.55，Backward方法沒有
+
+
+## (b)
+```{r}
+set.seed(1001)
+indx <- sample(1:nrow(p1) ,nrow(p1)*.67)
+train.p1 <- p1[indx,]
+test.p1 <- p1[-indx,]
+nrow(train.p1)+nrow(test.p1) == nrow(p1)
+
+df <- data_frame(alpha = rep(NA,11), MSE = NA)
+
+for (i in 0:10){
+cv_fit <-  cv.glmnet(train.p1[,-58] %>% as.matrix, train.p1[,58] %>% as.matrix, type.measure="mse", alpha=i/10,family="gaussian")
+
+fit <- glmnet(train.p1[,-58] %>% as.matrix, train.p1[,58] %>% as.matrix, family="binomial", alpha=1, lambda = cv_fit$lambda.min)
+
+fit_pred <- predict(fit, newx = test.p1[,-58] %>% as.matrix)
+# MSE lasso
+df$MSE[i+1] <- sum((fit_pred - test.p1$Y)^2) / nrow(fit_pred)
+df$alpha[i+1] <- (i/10)
+message(i)
+}
+
+df$label[1] <- "Ridge"
+df$label[2:10] <- NA
+df$label[11] <- "Lasso"
+df %>% 
+  ggplot(aes(x = alpha, y = MSE))+
+  geom_point()+
+  geom_text(aes(label = label, y = MSE+2))+
+  theme_bw()
+```
+
+- Ans: 從圖中可以看出選擇Alpha = 0，也就是使用Ridge Regression時MSE為最低，當選擇的Alpha值上升，也就是Lasso方法的比例提升時，模型MSE數值會提高，在使用Lasso Regression，即Alpha = 1時，MSE為最高。由此得知該資料可能較適合使用Ridge Regression進行變數篩選。
+
+# Problem 2
+Carry out a principal component analysis on the engineer data as follows. Ignore groups and use a correlation matrix based on all 40 observations. (48%)(pilots.dat)
+Table. Comparison of Six Tests on Engineer Apprentices and Pilots
+
+```{r}
+p2 <- read.table("/Users/linyuxiang/R/MSA/Data/pilots.dat", header = F)
+
+p2 <- p2[,-1]
+eigen(cor(p2))
+p2.pc <- princomp(p2,cor=TRUE)
+plot(p2.pc, type = "l")
+```
+
+- Ans: 從圖中可以看出第六個Component幾乎沒有變異，此資料若要進一步分析，最後可能只會選擇五個主成分。
+

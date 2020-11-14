@@ -1,0 +1,176 @@
+---
+title: "Exploratory Multivariate Data Analysis -- Hw 3"
+author: "Yu-Siang Lin"
+date: "11/14/2020"
+output:
+  html_document:
+    code_folding: show
+    theme: simplex
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: no
+  word_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(glmnet)
+```
+
+## Problem 1
+In Olkin and Veath (1980), the evolution of citrate concentrations in plasma is observed at three different times of day, $X_1$ (8 am), $X_2$ (11 am) and $X_3$ (3 pm), for two groups of patients who follow different diets. (The patients were randomly attributed to each group under a balanced design $n_1 = n_2 = 5$.  
+Test if the profiles of the groups are parallel, if they are at the same level and if they are horizontal. (plasma.dat)
+
+```{r}
+p1 <- read.table("/Users/linyuxiang/R/MSA/Data/plasma.dat", header = T)
+p1 %>% group_by(group) %>% 
+   summarise_at(c("x1", "x2", "x3"),mean) %>% 
+   gather("x", "y", -"group") %>% 
+   ggplot(aes(x = x, y = y, group = group, color = group)) +
+   geom_line()
+
+
+g1 <- subset(p1, group=="I")[,-1]; g2 <- subset(p1, group =="II")[,-1]
+S_g1 <- cov(g1); S_g2 <- cov(g2); pooled <- (S_g1+S_g2)/2
+n1 <- nrow(g1); n2 <- nrow(g2);n <- n1+n2 
+x1_bar <- apply(g1, 2, mean); x2_bar <- apply(g2, 2, mean)
+x_bar <- (x1_bar+x2_bar)/2
+p <- ncol(p1)-1
+A <- matrix(c(1,-1,0, 0,1,-1),nrow = 2, byrow= T)
+
+# parallelism
+para_T <- ((n1*n2) / (n1+n2)) * t(x1_bar - x2_bar) %*% t(A) %*% 
+   solve(A%*%pooled%*%t(A)) %*% A %*%(x1_bar - x2_bar)
+df1 <- p-1; df2 <- n1+n2-p
+(n1+n2-p) / ((n1+n2-2)*(p-1)) * para_T; 
+# 0.075
+(n1+n2-p) / ((n1+n2-2)*(p-1)) * para_T > qf(0.95, df1,df2)
+
+# Equal mean response
+equal_resp_T2 <- (n1+n2)* (t(x_bar)%*%t(A))%*%solve(A%*%pooled%*%t(A))%*%(A%*%x_bar)
+df1 <- p-1; df2 <- n1+n2-p
+(n1+n2-p)/((n1+n2-2)*(p-1)) * equal_resp_T2;
+(n1+n2-p)/((n1+n2-2)*(p-1)) * equal_resp_T2 > qf(0.95, df1, df2)
+
+# same level
+vec_1 <- matrix(rep(1,length(x_bar)),nrow = 1)
+abs(vec_1%*%(x1_bar-x2_bar) / 
+   sqrt((vec_1%*%pooled%*%t(vec_1)) * (1/n1 + 1/n2)));
+abs(vec_1%*%(x1_bar-x2_bar) / 
+   sqrt((vec_1%*%pooled%*%t(vec_1)) * (1/n1 + 1/n2))) > qt(0.95,n1+n2-2 )
+```
+
+- Ans: 從圖中大致上可以看出組別I和II可能有平行的關係，且在三個變數的差距都差不多，可能也有same level。針對Parallelism進行檢定，得到F值為0.075，小於F(0.95, 2,7) = 4.73，無法拒絕兩個組別間平行關係的虛無假設。在假設兩者平行的前提下進行Equal mean response的檢定，得到F值為3.781，小魚F(0.95, 2,7) = 4.73，無法拒絕兩個組別間 Equal mean response的虛無假設，即兩組別在不同變數、三個時間點的差距可能是相同的。同樣在平行關係的虛無假設下檢定Same level，得到T值為3.301，大於T(0.95, 8) = 1.839，拒絕Same level的虛無假設，即兩個組別不同變數、三個時間點的總平均應該是有差異的。
+
+
+
+## Problem 2
+
+Baten, Tack, and Baeder (1958) compared judges' scores on fish prepared by three methods. Twelve fish were cooked by each method, and several judges tasted fish samples and rated each on four variables: y1 = aroma, y2 = flavor, y3 = texture, and y4 =moisture. The data are in the file “fish.csv”. Each entry is an average score for the judges on that fish. Compare the three methods using all four MANOVA tests step by step in addition to using R packages. 
+
+```{r}
+p2 <- read.csv("/Users/linyuxiang/R/MSA/Data/fish.csv")
+colnames(p2) <- c("method", "aroma", "flavor", "texture", "moisture")
+
+p <- ncol(p2)-1
+m <- p2$method %>% as.factor() %>% unique %>% length
+n <- nrow(p2)
+## T
+T_matrix <- matrix(rep(0,p^2), nrow = p)
+for(i in 1:ncol(p2[,-1])){
+   for (j in 1:ncol(p2[,-1])){
+      T_matrix[i,j] <- (p2[,i+1] %*% p2[,j+1]) - 
+         (sum(p2[,i+1]) * sum(p2[,j+1]))/nrow(p2)
+      
+   }
+}
+## B
+B_matrix <- matrix(rep(0,p^2), nrow = p)
+temp_B <- p2 %>% 
+   group_by(method) %>% 
+   summarise_at(c("aroma", "flavor", "texture", "moisture") , sum) %>% 
+   as.matrix()
+for(i in 1:ncol(temp_B[,-1])){
+   for (j in 1:ncol(temp_B[,-1])){
+      B_matrix[i,j] <- (temp_B[,i+1] %*% temp_B[,j+1])/(nrow(p2)/m) - 
+         (sum(temp_B[,i+1]) * sum(temp_B[,j+1]))/nrow(p2)
+      
+   }
+}
+W_matrix <- T_matrix - B_matrix
+lambda <- det(W_matrix) / det(T_matrix)
+# Wilks' F
+wilks_F <- ((1-sqrt(lambda)) / sqrt(lambda)) * ((n - m - p + 1) / (p)); wilks_F 
+df1 <- 2*p
+df2 <- 2*(n-m-p+1)
+wilks_F > qf(0.95,df1,df2)
+# Run by package
+y <- cbind(p2$aroma, p2$flavor, p2$texture, p2$moisture)
+mod <- manova(y~as.factor(method), data = p2)
+summary(mod, test = "Wilks")
+
+# Roy
+lambda <- eigen(solve(W_matrix) %*% B_matrix)$values
+Roy_lambda <- max(lambda)
+d <- max(c(p, m-1))
+Roy_F <- ((n -  d - 1) *  Roy_lambda / d ); Roy_F
+# F test
+df1 <- d; df2 <- n-d-1
+##### 簡報df2寫成 n-m-d-1
+Roy_F > qf(0.95, df1,df2)
+summary(mod, test = "Roy")
+# Pillai
+Pillai_V <- sum(lambda/(1+lambda))
+s <- min(c(p, m-1))
+Pillai_F <- (n-m-p+s) * Pillai_V / (d*(s-Pillai_V)); Pillai_F
+# F test
+df1 <- s*d; df2 <- s*(n-m-p+s)
+##### 簡報df2 寫成 s*(n-m-p+s)
+Pillai_F > qf(0.95, df1, df2)
+summary(mod, test = "Pillai")
+
+# Hotelling-Lawley
+Hotel_U <- sum(lambda)
+Hotel_A <- (abs(m-p-1)-1)/2
+Hotel_B <- (n-m-p-1)/2
+df1 <- s*(2*Hotel_A+s+1); df2 <- 2*(s*Hotel_B+1)
+Hotel_F <- df2*Hotel_U / (s*df1); Hotel_F
+Hotel_F> qf(0.95, df1, df2)
+summary(mod, test = "Hotelling-Lawley")
+```
+
+- Ans: 不論使用Wilks, Roy, Pillai或Hotelling-Lawley的方法檢定，均得到相同結論，在不同烹調方法下，魚的Aroma, Flavor, Texture及Moisture變數存在差異。四個方法的F值分別為8.48, 23.526, 5.896, 11.461。
+
+## Problem 3
+The file turtle.dat contains the carapace measurements for 24 female and 24 male turtles. Use Box's M-test to test $H_0:\;\Sigma_1=\Sigma_2=\Sigma$, where $\Sigma_1$ is the population covariance matrix for carapace measurements for female turtles, and $\Sigma_2$ is the population covariance matrix for carapace measurements for male turtles. Set $\alpha=0.05$.
+Implement the test step-by-step and compare the result obtained by R package. 
+```{r}
+library(covTestR)
+p3 <- read.table("/Users/linyuxiang/R/MSA/Data/turtle.dat", header = T)
+f <- subset(p3, female =="female")[,1:3] 
+m <- subset(p3, female == "male")[,1:3]
+s_m <- cov(m); f_m <- cov(f)
+
+j <- 2; p <- 3; n_m <- nrow(m); n_f <- nrow(f);n <- n_m+n_f
+pooled <- ((n_m/n) * s_m ) + ((n_f/n) * f_m )
+Boxes_M <- ((n_m-1) * log(det(pooled)) + (n_f-1) * log(det(pooled)))  - ((n_m-1) * log(det(s_m)) + (n_f-1) * log(det(f_m)))
+
+Boxes_C <- 1-( ((2*(p^2)+3*p-1)/ (6*(p+1)*(j-1))) * (((1/(n_m-1))+(1/(n_f-1))) - ((1/(n_m+n_f))*j)) )
+# chi-test
+Boxes_M*Boxes_C
+Boxes_M*Boxes_C > qchisq(0.95, 3)
+homogeneityCovariances(p3,group = female, covTest = BoxesM)
+
+p3
+```
+
+- Ans: 針對不同性別的資料進行Covariance matrix檢定，得到檢定值為22.60577，>$X^2(0.95,3) = 7.814$，拒絕不同性別變數間Covariance matrix可能存在差異。若使用CovtestR裡的homogeneityCovariances函數進行檢定，同樣可以得到拒絕相同共變矩陣的虛無假設，惟得到的F值略有差異，使用寫好的函數得到的F值23.754，略高於22.60。
+
+

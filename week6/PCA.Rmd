@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+author: "Yu-Xiang, Lin"
+date: "11/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+bird <- read.table("/Users/linyuxiang/Desktop/多變量/Data/bumpus.dat",header = T)
+```
+
+```{r}
+
+X1_5<-c(2:3,5:6,10);
+bird_cor<-cor(bird[,X1_5])
+bird_cov<-cov(bird[,X1_5])
+
+eigen(bird_cor);
+bird_pca1<-prcomp(bird[,X1_5],scale=T); summary(bird_pca1);
+bird_pca2<-princomp(bird[,X1_5],cor=TRUE); summary(bird_pca2, loadings=TRUE);
+plot(bird_pca2)
+biplot(bird_pca2,col=c("red","green"))
+
+```
+```{r}
+#### Test scores of 10 students in 4 subjects
+Ch<-c(85,90,60,70,68,77,50,80,85,55);
+En<-c(76,95,45,65,56,80,30,70,75,60);
+Math<-c(60,80,38,60,70,65,40,60,65,40);
+Social<-c(85,72,80,76,70,68,80,66,84,50);
+student<-data.frame(Ch,En,Math,Social)
+cor(student)
+eigen(cor(student))
+stu_pca2<-princomp(student,cor=TRUE); summary(stu_pca2,loadings=TRUE);
+str_pca <- prcomp(student, scale. = T)
+summary(str_pca)
+str_pca
+plot(stu_pca2, type="lines")
+
+zdat<-scale(as.matrix(student));
+pca.score<- zdat %*% (stu_pca2$loadings);pca.score
+cor(as.matrix(student)[,1:4],pca.score[,1])
+```
+

@@ -1,0 +1,212 @@
+---
+title: "Untitled"
+author: "Yu-Xiang, Lin"
+date: "11/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(stringsAsFactors=FALSE)
+options()
+```
+
+```{r}
+library(tidyverse)
+```
+# no run
+```{r}
+df <- read_csv("/Users/linyuxiang/R/MSA/Data/HiSeq.csv")
+df2 <- t(df)
+colnames(df2) <- df2[1,]
+df2 <- df2 %>% 
+  as.data.frame()
+df2$id <- rownames(df2)
+df2 <- df2[df2$id != "sample",]
+```
+
+
+```{r}
+
+##1-Mar 重複
+colnames(df2)[580] == colnames(df2)[17058]
+colnames(df2)[580] <- "1-Mar_1"
+colnames(df2)[17058] <- "1-Mar_2"
+##2-Mar 重複
+colnames(df2)[581] == colnames(df2)[17060]
+colnames(df2)[581] <- "2-Mar_1"
+colnames(df2)[17060] <- "2-Mar_2"
+df2 <- df2 %>% 
+  mutate(target = ifelse(str_detect(id, "01"),1,0))
+
+indx <- sapply(df2, is.factor)
+df2[indx] <- lapply(df2[indx], function(x) as.numeric(as.character(x)))
+saveRDS(df2, "/Users/linyuxiang/Desktop/多變量/Data/df.rds")
+```
+
+```{r}
+pca_df2 <- prcomp(df2 %>% select(-target, -id), center = T, scale. = F)
+plot(pca_df2, type = "l" ,n=30)
+
+
+train.df <- pca_df2$x[, 1:14] %>% as_tibble() %>%
+     bind_cols(df2 %>% select(target, id))
+
+fit1 <- lm(target~., train.df %>% select(-id))
+predict(fit1)>0
+
+cor_df <- data_frame(var = rep(NA, 26540),val = rep(NA, 26540) )
+for (i in 1:26540){
+  cor_df$var[i] <- colnames(df2)[i]
+  cor_df$val[i] <- (cor(df2[,i], df2[,26542]))^2
+}
+
+subset_x <- cor_df %>% 
+  arrange(desc(val)) %>% 
+  slice(1:415) %>% 
+  select(var)
+
+set.seed(123)
+indx1 <- sample(which(df2$target==1), sum(df2$target==1) * 0.2)
+indx2 <- sample(which(df2$target==0), sum(df2$target==0) * 0.2)
+train.df <- df2[-c(indx1, indx2),]
+test.df <- df2[c(indx1, indx2),]
+
+
+mod <- (lm(data = train.df %>% 
+  select(subset_x$var, target),target~. ))
+test.df$target 
+
+ans_df <- predict(mod, newdata = test.df %>% select(subset_x$var)) %>% as.data.frame %>% bind_cols(test.df$target) %>% 
+  mutate(y = ifelse(`.`>0,1,0)) %>% 
+  select(-1)
+```
+# sample
+```{r}
+set.seed(123)
+indx1 <- sample(which(df2$target==1), sum(df2$target==1) * 0.2)
+indx2 <- sample(which(df2$target==0), sum(df2$target==0) * 0.2)
+test.df <- trans0001[c(indx1, indx2),] 
+train.df <- trans0001[-c(indx1, indx2),]
+```
+
+```{r}
+library(nnet)
+
+fit_mnl <- multinom(GC ~ AGAP6+CCL4L2, data = train_df)
+predict(fit_mnl, newdata = test_df, "class")
+
+mod <- glm(GC~AGAP6+CCL4L2, data = train_df, family = "binomial")
+predict(mod, newdata = test_df, type = "response")
+```
+
+```{r , include=FALSE, include=FALSE}
+prcomp(train_df %>% select(-GC), scale. = T)
+```
+
+
+```{r include=FALSE}
+
+trans0001 <- read.csv("/Users/linyuxiang/R/MSA/Data/trans0001.csv")
+library(nnet)
+df <- matrix(rep(0, 80*30), nrow = 80, ncol = 30) %>% as.data.frame
+for (i in 1:30){
+set.seed(i)
+message("This is" ,i, "seed")
+indx1 <- sample(which(trans0001$GC==1), sum(trans0001$GC==1) * 0.2)
+indx2 <- sample(which(trans0001$GC==0), sum(trans0001$GC==0) * 0.2)
+test_df <- trans0001[c(indx1, indx2),] 
+train_df <- trans0001[-c(indx1, indx2),]
+error <- c()
+for (pc_num in 21:100){ 
+train.pc <- prcomp(train_df %>% select(-GC), scale. = T)
+train <-bind_cols(train_df[,1], train.pc$x[,(1:pc_num)] %>% as.data.frame )
+colnames(train)[1] <- "GC"
+test.pc <- predict(train.pc, newdata = (test_df %>% select(-GC)))
+mod <- multinom(data = train, GC~.)
+
+predict_y <- predict(mod, test.pc[,1:pc_num])
+error[pc_num-20] <- length(predict_y) - sum(predict_y == test_df$GC) ; 
+}
+df[,i] <- error
+}
+
+df <- t(df)
+df <- df %>% as.data.frame() 
+names(df) <- x_name
+
+rownames(df)
+mean_df <- df %>% apply(2,mean) %>% as.data.frame()
+mean_df$x <- 21:100
+names(mean_df) <- c("Mean_Error","PC_Number")
+
+mean_df$label <- NA
+mean_df[mean_df$Mean_Error<1.44,]$label <- c(86,88,96)
+
+mean_df %>% 
+  ggplot(aes(x = PC_Number, y = Mean_Error, type = 2))+
+  geom_point(shape = 21)+
+  geom_text(aes(label = label, y = Mean_Error+0.05),size = 2.5)+
+  theme_classic()+
+  ggtitle("ERROR TO PC")+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(colour = "grey", linetype = "dashed"),
+        panel.grid.minor.y = element_line(colour = "grey", linetype = "dashed"),
+        plot.title = element_text(colour = "red", face = "bold"))
+
+
+  
+
+
+  ggplot()
+```
+
+```{r}
+lr.pca<-prcomp(train_df[,-1],scale=TRUE)
+summary(lr.pca)
+lambda_train<-(lr.pca$sdev)^2
+ratio_train<-lambda_train/sum(lambda_train)
+
+i=1;
+Explan=0
+while (Explan<0.9){
+  Explan<-sum(ratio_train[1:i])
+  i=i+1;
+}
+
+k=1;
+Explan=0
+while (Explan<0.8){
+  Explan<-sum(ratio_train[1:k])
+  k=k+1;
+}
+
+screeplot(lr.pca,type="lines",npcs=100,main="PCA for variance",bty='o')
+title(xlab="PC index",cex.lab=1)
+x.pca<-lr.pca$x[,1:k]
+Trim_variable<-colnames(x.pca)
+x.pca<-cbind(train_df[,1],x.pca)
+colnames(x.pca)<-c("GC",Trim_variable)
+names(Prob_cum)<-names(Trim_variable)
+Prob_cum<-cumsum(ratio_train[1:i])
+plot(Prob_cum,xlab="PC amounts",ylab="Accumulated Prob.")
+abline(h=0.8,lty=3)
+abline(v=89,lty=3)
+text(15,0.85,"89",col="red")
+text(47,0.85,"/6434 PCs need to be considered")
+
+pr.mnl<-multinom(paste("GC~",paste(Trim_variable,collapse="+")),data=data.frame(x.pca))
+
+###Test_data PCs conversion####
+Rotate_Test<-as.matrix(scale(test_df[,-1]))%*%as.matrix(lr.pca$rotation[,1:50])
+Rotate_Test<-cbind(test_df[,1],Rotate_Test)
+colnames(Rotate_Test)<-c("GC",Trim_variable)
+###Test_data PCs conversion####
+
+nomial.predict<-predict(pr.mnl,newdata=Rotate_Test[,-1],"class");nomial.predict
+Error<-length(nomial.predict)-
+  sum(nomial.predict==as.factor(test_df$GC))
+print("There are no error prediction")
+```
+

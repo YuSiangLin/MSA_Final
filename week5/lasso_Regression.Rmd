@@ -1,0 +1,97 @@
+---
+title: "Regression"
+author: "Yu-Xiang, Lin"
+date: "10/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+require(readr)
+library(broom)
+require(dplyr)
+require(glmnet)
+```
+# import data
+```{r}
+pcancer <- read_delim("http://www-stat.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data", "\t", escape_double = FALSE, trim_ws = TRUE)
+```
+
+```{r}
+pr.train <- pcancer[which(pcancer$train),2:10]
+pr.test <- pcancer[-which(pcancer$train), 2:10]
+
+pairs(pr.train[,1:9], pch=19, cex=.25)
+round(cor(pr.train[,1:9]),3)
+pr.ls <- lm(lpsa ~ ., data=pr.train)
+summary(pr.ls)
+```
+
+# step-wise forward and backward
+```{r}
+# forward
+pr.fwd <- step(lm(lpsa ~ 1, data=pr.train),~ lcavol + lweight + age + lbph + svi + lcp + gleason + pgg45,data=pr.train, direction="forward")
+# back ward
+pr.bwd <- step( pr.ls, direction = "backward")
+```
+
+```{r}
+my_data <- pcancer[2:10]
+my_data$gleason <- factor(my_data$gleason)
+
+lm(data = my_data, lpsa~.) %>% summary
+lm(data = my_data, log(lpsa)~.) %>% summary
+
+fit <- regsubsets(lpsa~., data = my_data, intercept = T, method = "exhaustive") 
+summary(fit)$adjr2
+
+fit <- lm(lpsa ~ lcavol + lweight + svi, data = pcancer) 
+plot(fit)
+```
+# 
+```{r}
+library(MASS)
+library(glmnet)
+
+
+set.seed(19875)
+
+n <- 1000 # Number of observations
+p <- 5000 # Number of predictors included
+real_p <- 15 # Number of true predictors
+x <- matrix(rnorm(n*p), nrow=n, ncol=p)
+y <- apply(x[,1:real_p], 1, sum) + rnorm(n)
+train_rows <- sample(1:n, .66*n)
+x.train <- x[train_rows, ]
+x.test <- x[-train_rows, ]
+y.train <- y[train_rows]
+y.test <- y[-train_rows]
+
+fit.lasso <- glmnet(x.train, y.train,
+family="gaussian", alpha=1)
+fit.ridge <- glmnet(x.train, y.train,
+family="gaussian", alpha=0)
+fit.elnet <- glmnet(x.train, y.train,
+family="gaussian", alpha=.5)
+
+for (i in 0:10){
+assign(paste("fit", i, sep=""), cv.glmnet(x.train, y.train, type.measure="mse", alpha=i/10,family="gaussian"))
+}
+
+par(mfrow=c(3,2))
+# For plotting options, type '?plot.glmnet' in R console 
+plot(fit.lasso, xvar="lambda")
+plot(fit10, main="LASSO")
+plot(fit.ridge, xvar="lambda") 
+plot(fit0, main="Ridge")
+plot(fit.elnet, xvar="lambda") 
+plot(fit5, main="Elastic Net")
+
+
+cv.glmnet(x.train, y.train, type.measure = "mse", alpha = 1, family = "gaussian")
+
+```
+

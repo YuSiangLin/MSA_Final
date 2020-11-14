@@ -1,0 +1,230 @@
+---
+title: "Midterm exam"
+author: "Yu-Xiang Lin"
+date: "11/9/2020"
+output:
+  word_document:
+    toc: yes
+    toc_depth: '4'
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+  html_document:
+    code_folding: show
+    theme: simplex
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: no
+---
+
+```{r}
+library(tidyverse)
+library(covTestR)
+library(glmnet)
+library(gridExtra)
+library(grid)
+library(Hotelling)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Problem 1
+```{r}
+p1 <- read.table("/Users/linyuxiang/R/MSA/mid/paper.dat", header = T)
+```
+Paper is manufactured in continuous sheets several feet wide. Because of the orientation of fibers within the paper, it has a different strength when measured in the direction produced by the machine than when measured across, or at right angles to, the machine direction. The file "paper.dat" shows the measured values of  
+x1 = density(grams/cubic centinleter)  
+x2 = strength (pounds) in the machine direction  
+x3 = strength (pounds) in the cross direction  
+### (a) Plot the scatter plots as the off-diagonal elements and box plots as the diagonal elements.  (10%)   
+```{r}
+myplot <- function(i,ii){
+   if (i != ii){
+   p <- ggplot(p1, aes(x = p1[,i],y = p1[,ii]))+
+   geom_point()+
+   xlab(paste0(names(p1)[i]))+ylab(paste0(names(p1)[ii]))
+}
+return(p)
+}
+box_p1 <- p1 %>% gather("x", "y")
+
+p1_1 <- subset(box_p1, x =="density") %>% 
+   ggplot(.,aes(x = x, y = y)) +
+   geom_boxplot()+
+   ylab("value")
+p2_2 <- subset(box_p1, x =="machine") %>% 
+   ggplot(.,aes(x = x, y = y)) +
+   geom_boxplot()+
+   ylab("value")
+p3_3 <- subset(box_p1, x =="cross") %>% 
+   ggplot(.,aes(x = x, y = y)) +
+   geom_boxplot()+
+   ylab("value")
+
+p1_2 <- myplot(1,2);p1_3<- myplot(1,3)
+p2_1 <- myplot(2,1);p2_3 <- myplot(2,3)
+p3_1 <- myplot(3,1);p3_2 <- myplot(3,2)
+grid.arrange(p1_1,p1_2,p1_3,
+             p2_1,p2_2,p2_3,
+             p3_1,p3_2,p3_3,nrow= 3)
+```
+
+- Ans: 從散佈圖中可以看出變數machine, density, croww間幾乎都呈現正相關，且從箱型圖中可以發現似乎有一個觀察值在density變項中屬於outlier
+
+### (b) Examine the data on paper-quality measurements for single and multivariate outliers as well as the multivariate normality.(10%)   
+```{r}
+## Single Outlier
+density <- scale(p1$density); which(density > 2.5)
+machine <- scale(p1$machine); which(machine > 2.5)
+cross <- scale(p1$cross); which(cross > 2.5)
+## multivariate outliers
+Sx <- cov(p1)
+D2 <- mahalanobis(p1,colMeans(p1),Sx)
+# simple
+p <- ncol(p1)
+which((D2 / p) >2.5)
+# Wilks' statisc
+n <- nrow(p1)
+w <- 1-((n*(D2)) / (n-1)^2)
+Fi <- ((n-p-1)/p) * ((1/w)-1)
+which(Fi > qf(0.995,p,n-p-1))
+## Multivariate normality
+index <-  ((1:n)-0.5)/n
+quant <- qchisq(index,p)
+qq_p1 <- bind_cols(p1,data_frame(D2 = D2,quant = quant))
+  qqnorm(qq_p1$D2,ylab = "Ordered Mahalanobis Distance");qqline(qq_p1$D2)
+
+```
+
+
+- Ans: 針對個觀察樣本的每個變項進行outlier的檢定，結果發現只有第25個樣本的density數值屬於outlier，其他樣本以及其他變數均沒有outlier存在。使用$D_2/p$ > 2.5作為Multivariate outlier檢定的標準，發現第25個樣本為outlier。若進一步使用使用Wilks' statisc進行Multivariate outlier檢定可以得到該樣本為outlier, 和起初使用D2 / p > 2.5的標準得到相同結果，outlier為第25個觀察值。針對Multivariate normality，從Q-Q圖中可以發現該資料可能是常態分配，大部分樣本的Mahalanobis Distance的數值均座落於Q-Q line，只有少部分Mahalannobis Distance的數值略高於Q-Q line，且只有一個樣本遠高於Q-Q line
+
+
+## Problem 2
+```{r}
+p2 <- read.table("/Users/linyuxiang/R/MSA/mid/love.dat")
+```
+
+As part of the study of love and marriage, a sample of husbands and wives were asked to respond to these questions:  
+1. What is the level of passionate love you feel for your partner?  
+2. What is the level of passionate love that your partner feels for you?  
+3. What is the level of companionate love that you feel for your partner?  
+4. What is the level of companionate love that your partner feels for you?  
+
+The responses were recorded on the following 5-point scale.
+1. None at all. 
+2. Very little. 
+3. Some. 
+4. A great deal. 
+5. Tremendous amount.  
+
+30 husbands and 30 wives gave the responses in the Thble, where $X_1$ = a 5-point- scale response to Question 1, $X_2$ = a 5-point-scale response to Question 2, $X_3$ = a 5-point-scale response to Question 3, and $X_4$ = a 5-point-scale response to Question 4.  (love.dat)  
+### (a) Plot the mean vectors for husbands and wives as sample profiles.  (10%)     
+```{r}
+p2 %>% group_by(V5) %>% 
+   summarise_at(c("V1","V2","V3","V4"),mean) %>% 
+   gather("question","value", -V5) %>% 
+   ggplot(aes(x = factor(question), y = value, group = V5, color = V5))+
+   geom_line()+
+   geom_point()+
+   xlab("question")
+```
+
+- Ans: 從圖中大致上可以看出Husband和Wife間在不同的問題上可能有平行的關係，但從V2和V3在Husband和Wife的差距不同即可看出可能沒有same level
+
+### (b) Is the husband rating wife profile parallel to the wife rating husband profile? Test for parallel profiles with $\alpha = 0.05$. If the profiles appear to be parallel, test for coin- cident profiles at the same level of significance. Finally, if the profiles are coinci- dent, test for level profiles with $\alpha = 0.05$. What conclusion(s) can be drawn from this analysis? (20%)  
+```{r}
+g1 <- subset(p2, V5=="Husband")[,-5]
+g2 <- subset(p2, V5 =="Wife")[,-5]
+S_g1 <- cov(g1); S_g2 <- cov(g2); pooled <- (S_g1+S_g2)/2
+n1 <- nrow(g1); n2 <- nrow(g2);n <- n1+n2 
+x1_bar <- apply(g1, 2, mean); x2_bar <- apply(g2, 2, mean)
+x_bar <- (x1_bar+x2_bar)/2
+p <- ncol(p2)-1
+A <- matrix(c(1,-1,0,0,0,1,-1,0,0,0,1,-1),nrow = 3, byrow= T)
+# parallelism
+para_T <- ((n1*n2) / (n1+n2)) * t(x1_bar - x2_bar) %*% t(A) %*% 
+   solve(A%*%pooled%*%t(A)) %*% A %*%(x1_bar - x2_bar)
+df1 <- p-1; df2 <- n1+n2-p
+(n1+n2-p) / ((n1+n2-2)*(p-1)) * para_T; 
+(n1+n2-p) / ((n1+n2-2)*(p-1)) * para_T > qf(0.95, df1,df2); ## Paralle relation 2.579917
+
+
+# Equal mean response
+equal_resp_T2 <- (n1+n2)* (t(x_bar)%*%t(A))%*%solve(A%*%pooled%*%t(A))%*%(A%*%x_bar)
+df1 <- p-1; df2 <- n1+n2-p
+(n1+n2-p)/((n1+n2-2)*(p-1)) * equal_resp_T2;
+(n1+n2-p)/((n1+n2-2)*(p-1)) * equal_resp_T2 > qf(0.95, df1, df2); ## No equal mean response 8.18807
+
+# same level
+vec_1 <- matrix(rep(1,length(x_bar)),nrow = 1)
+abs(vec_1%*%(x1_bar-x2_bar) / 
+   sqrt((vec_1%*%pooled%*%t(vec_1)) * (1/n1 + 1/n2)));
+abs(vec_1%*%(x1_bar-x2_bar) / 
+   sqrt((vec_1%*%pooled%*%t(vec_1)) * (1/n1 + 1/n2))) > qt(0.95,n1+n2-2); ## Same Level T 1.238051
+```
+
+- Ans: 在$\alpha = 0.95下$Profile analysis的Parallelism檢驗中，F值為2.579917，小於F(0.95, 3,56) = 2.76，因此無法拒絕兩者關係平行的虛無假設。接著在假設平行的前提下檢測Equal mean response和Same level，在Equal mean response的檢驗中，F值為8.18807，大於F(0.95, 3,56) = 2.76，拒絕Equal mean response的虛無假設，即Husband和Wife在不同變數間的差距可能是不同的；在Same level的檢驗中，T值為1.238051，小於T(0.95, 58) = 1.67，無法拒絕Same level的虛無假設，也就是說在Husband和Wife組間問題的平均分數可能沒有明顯差異。
+
+
+## Problem 3
+```{r}
+p3 <- read.csv("/Users/linyuxiang/R/MSA/mid/blood.csv")
+```
+
+The following is the investigation of hemophilia by the National Taiwan University Medical School. Among the 68 women under investigation, 31 were normal people and the other 37 were definite carriers of hemophilia. (blood.csv) The test items were:  
+X1 = factor VIII coagulant activity %  
+X2 = factor VIII related antigen %  
+### (a) Test the homogeneity of covariance matrices.  (10%)
+```{r}
+homogeneityCovariances(p3, group = carrier)
+```
+
+- Ans: p-value = 1, 拒絕$H_0: \Sigma_1 = \Sigma_2$，也就是說Carrier兩個組別Covariance matrices間可能存在差異。
+
+### (b) Test the equality between the mean vectors of two groups.  (15%)
+```{r}
+y <- cbind(p3$X1, p3$X2)
+mod <- manova(y~as.factor(carrier), data = p3)
+summary(mod, test = "Wilks") # F: 58.27
+fit <- hotelling.test(data = p3,.~carrier); fit
+```
+- Ans: 在$\alpha = 0.001$下達統計顯著，拒絕兩個組別間變數間平均數沒有不同的虛無假設，即在carrier = 1和carrier = 0的組別間factor VIII coagulant activity, factor VIII related antigen存在差異。
+
+## Problem 4
+```{r}
+p4 <- read.table("/Users/linyuxiang/R/MSA/mid/food.dat", header = T)
+```
+
+Survey data were collected as part of a study to assess options for enhancing food security through the sustainable use of natural resources in the West Africa. A total of n = 72 farmers were surveyed and observations on the nine variables. (food.dat)
+
+x1 = Family (total number of individuals in household)  
+x2 = DistRd (distance in kilometers to nearest passable road)  
+x3 = Cotton (hectares of cotton planted in year 2000)  
+x4 = Maize (hectares of maize planted in year 2000)  
+x5 = Sorg (hectares of sorghum planted in year 2000)  
+x6 = Millet (hectares of millet planted in year 2000)  
+x7 = Bull (total number of bullocks or draft animals)  
+x8 = Cattle (total)
+x9 = Goats (total)  
+### (b) Perform a principal component analysis using the correlation matrix R. Determine the number of components to effectively summarize the variability. Use the proportion of variation explained and a scree plot to aid in your determination.   (15%) 
+```{r}
+p4.pc <- princomp(p4,cor=TRUE)
+plot(p4.pc, type = "l")
+```
+
+- Ans: 從圖中可以看出在第六個主成分後的Variance幾乎趨近於零，因此我會選擇6個主成分作為模型的變項。
+
+### (c) Interpret the first five principal components. Can you identify, for example, a "farm-size" component? A, perhaps, "goats and distance to road" component? (10%)   
+```{r}
+princomp(p4,cor=TRUE) %>% summary(loadings = T)
+```
+
+- Ans: 第一個因子由變數Family, Cotton, Bull貢獻做多，是家戶人數、棉花種植面積、牛隻圈養數量的相關因子；
+第二個因子主要由Sorg, Millet, DistRD貢獻最多，其中DistRd是反向的關係，是Sorg種植面積、Millet種植面積以及與最近道路距離相關的因子；
+第三個因子是DistRd, Goats 為主要貢獻，兩者均為負向關係，是與最近道路距離以及總Goat圈養數量相關的因子；
+第四個因子主要由DistRd, Millet貢獻，兩者均為正向關係，是與最近道路距離以及Millet的種植面積相關的因子；
+第五個因子主要由Sorg, Millet構成，其中Sorg為負向關係，該因子應該是和Sorg種植面積負相關，和Millet種植面積正相關的因子。
